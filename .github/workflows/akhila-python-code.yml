@@ -28,6 +28,6 @@ jobs:
         run: python app.py
       - name: Run tests
         run: |
-          flake8 app tests
-          pytest tests --junitxml=report.xml --cov=app.py --cov-report=xml
+          flake8 app.py tests
+          pytest tests --junitxml=report.xml --cov=app --cov-report=xml
      
