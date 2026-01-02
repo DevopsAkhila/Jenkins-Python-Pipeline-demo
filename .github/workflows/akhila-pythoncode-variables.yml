@@ -1,0 +1,71 @@
+---
+name: Variables demo in Github-Actions
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches: 
+      - master
+# Environmental variables can be defined at different levels
+# 1. Repository level - Settings -> Secrets and variables -> Actions  
+# 2. Workflow level - defined under 'env' key at the top level of the YAML file
+# 3. Job level - defined under 'env' key within a job
+# 4. Step level - defined under 'env' key within a step
+# 5. Runner level - defined on the runner machine itself
+# 6. System level - predefined by GitHub Actions
+# 7. Job outputs - variables passed between jobs
+# 8. Step outputs - variables passed between steps within a job
+# 9. Using 'GITHUB_ENV' file to set environment variables for subsequent steps
+env:
+  PYTHON_VERSION: '3.11'
+jobs:
+  job1:
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      -name: Checkout repository
+       uses: actions/checkout@v4
+      - name: Display workflow-level variable
+        run: echo "Workflow-level PYTHON_VERSION is $PYTHON_VERSION"
+      - name: Install Python ${{env.PYTHON_VERSION}}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{env.PYTHON_VERSION}}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+         pip install -r requirements.txt
+    job2:
+      runs-on: ubuntu-latest
+      env:
+        JOB_PYTHON_VERSION: '3.9'  # Job-level variable
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4 
+        - name: Display job-level variable
+          run: echo "Job-level PYTHON_VERSION is $JOB_PYTHON_VERSION"
+        - name: Install Python ${{env.JOB_PYTHON_VERSION}}
+          uses: actions/setup-python@v6
+          with:
+            python-version: ${{env.JOB_PYTHON_VERSION}}
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+    job3: #step-level demonstration
+       runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+        - name: Set step-level variable and Install Python
+          env:
+            STEP_PYTHON_VERSION: '3.8'  # Step-level variable
+          uses: actions/setup-python@v6
+          with:
+            python-version: ${{env.STEP_PYTHON_VERSION}}
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
