@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-       uses: actions/checkout@v4
+        uses: actions/checkout@v4
       - name: Display workflow-level variable
         run: echo "Workflow-level PYTHON_VERSION is $PYTHON_VERSION"
       - name: Install Python ${{env.PYTHON_VERSION}}
